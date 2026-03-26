@@ -1,0 +1,3 @@
+## 基于LangChain4J+Postgresql和PgVector实现的基础对话流AI
+
+主要目的在于学习LangChain4J和PgVector
