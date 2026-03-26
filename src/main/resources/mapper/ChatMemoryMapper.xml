@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huzhijian.pgvectordemo.mapper.ChatMemoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.ChatMemory">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="role" column="role" jdbcType="OTHER"/>
+            <result property="createAt" column="create_at" jdbcType="TIMESTAMP"/>
+            <result property="memoryId" column="memory_id" jdbcType="JAVA_OBJECT"/>
+    </resultMap>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into chat_memory(content,role,memory_id) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.content},#{item.role}::role_em,#{item.memoryId}::uuid)
+        </foreach>
+
+    </insert>
+    <delete id="delAllByMemoryId">
+        delete from chat_memory where memory_id=#{memoryId}::uuid
+    </delete>
+    <select id="getAllByMemoryId" resultMap="BaseResultMap">
+      select * from chat_memory where memory_id=#{memoryId}::uuid
+
+    </select>
+</mapper>

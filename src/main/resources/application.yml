@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: pgvector-demo
+  profiles:
+    active: dev
+logging:
+  level:
+    com:
+      huzhijian:
+        pgvectordemo: debug
