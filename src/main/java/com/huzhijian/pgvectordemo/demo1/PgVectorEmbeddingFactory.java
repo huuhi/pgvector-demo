@@ -1,15 +1,14 @@
 package com.huzhijian.pgvectordemo.demo1;
 
-import com.zaxxer.hikari.HikariConfig;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.pgvector.DefaultMetadataStorageConfig;
-import dev.langchain4j.store.embedding.pgvector.MetadataStorageConfig;
-import dev.langchain4j.store.embedding.pgvector.MetadataStorageMode;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.annotation.Resource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.util.function.Function;
 
 /**
@@ -20,32 +19,12 @@ import java.util.function.Function;
  */
 @Component
 public class PgVectorEmbeddingFactory {
-//    获取Pg
-//    @Value("${embedding.host}")
-//    private  String host;
-//    @Value("${embedding.database}")
-//    private  String database;
-//    @Value("${embedding.user}")
-//    private  String user;
-//    @Value("${embedding.password}")
-//    private  String password;
-//    @Value("${embedding.port}")
-//    private  Integer port;
-    @Value("${spring.datasource.url}")
-    private String jdbcUrl;
-    @Value("${spring.datasource.username}")
-    private String username;
-    @Value("${spring.datasource.password}")
-    private String password;
-    HikariConfig config = new HikariConfig();
+    @Resource
+    private DataSource dataSourceT;
     @Bean
     public Function<String,PgVectorEmbeddingStore> getPgVector(EmbeddingModel embeddingModel){
-        config.setJdbcUrl(jdbcUrl);
-        config.setUsername(username);
-        config.setPassword(password);
-        config.setMaximumPoolSize(10);
         return table->PgVectorEmbeddingStore.datasourceBuilder()
-                .datasource(config.getDataSource())
+                .datasource(dataSourceT)
                 .table(table)
                 .dimension(embeddingModel.dimension())
                 .createTable(true)

@@ -1,14 +1,30 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
+import com.huzhijian.pgvectordemo.config.ServerConfig;
 import com.huzhijian.pgvectordemo.demo1.PgVectorEmbeddingFactory;
+import com.huzhijian.pgvectordemo.domain.KnowledgeFiles;
 import com.huzhijian.pgvectordemo.service.KnowledgeService;
+import com.huzhijian.pgvectordemo.utils.FileUtils;
+import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.Metadata;
+import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
+import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
+import dev.langchain4j.data.document.splitter.DocumentByLineSplitter;
+import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
+import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.config.TikaConfigSerializer;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -18,12 +34,17 @@ import java.util.function.Function;
  * 创造日期 2026/3/26
  * 说明:
  */
+@Slf4j
+@Service
 public class KnowledgeServiceImpl implements KnowledgeService {
     private final Function<String, PgVectorEmbeddingStore> factory;
     private final EmbeddingModel embeddingModel;
-    public KnowledgeServiceImpl(Function<String, PgVectorEmbeddingStore> factory, EmbeddingModel embeddingModel) {
+    private final FileUtils fileUtils;
+
+    public KnowledgeServiceImpl(Function<String, PgVectorEmbeddingStore> factory, EmbeddingModel embeddingModel, FileUtils fileUtils) {
         this.factory = factory;
         this.embeddingModel = embeddingModel;
+        this.fileUtils = fileUtils;
     }
 
     @Override
@@ -35,6 +56,27 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         Metadata metadata = Metadata.from(metadataMap);
         TextSegment textSegment = TextSegment.from(text, metadata);
         String id = store.add(embed.content(), textSegment);
-        return id==null;
+        return id!=null;
+    }
+
+    @Override
+    public void insertFiles(MultipartFile[] files) {
+        fileUtils.uploadFils(files);
+    }
+    @Override
+    public void insertKnowledgeFile(String table, List<Long> ids) {
+
+        List<KnowledgeFiles> files = fileUtils.getFilesById(ids);
+        PgVectorEmbeddingStore store = factory.apply(table);
+//        每隔500个字符切分一下，重叠50字符
+        DocumentSplitter splitter = DocumentSplitters.recursive(850, 150);
+        for (KnowledgeFiles file : files) {
+            Document document = FileSystemDocumentLoader.loadDocument(file.getFilePath(), new ApacheTikaDocumentParser());
+            document.metadata().put("fileId",file.getId());
+            List<TextSegment> segments = splitter.split(document);
+            log.info("块大小:{}",segments.size());
+            List<Embedding> content = embeddingModel.embedAll(segments).content();
+            store.addAll(content,segments);
+        }
     }
 }
