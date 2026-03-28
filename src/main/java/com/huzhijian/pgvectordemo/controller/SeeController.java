@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * @author 胡志坚
@@ -28,6 +29,9 @@ public class SeeController {
     @GetMapping("/stream")
     public SseEmitter streamChat(@RequestParam String message,@RequestParam Object memoryId) {
         SseEmitter sseEmitter = new SseEmitter(120000L);
+        if (memoryId==null||memoryId==""){
+            memoryId= UUID.randomUUID().toString();
+        }
         TokenStream tokenStream = chatAssistant.chat(UserMessage.from(message),memoryId);
         tokenStream.onPartialThinking(thinking -> {
             try {

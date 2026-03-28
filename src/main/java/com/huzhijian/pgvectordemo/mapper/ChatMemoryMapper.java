@@ -1,10 +1,8 @@
 package com.huzhijian.pgvectordemo.mapper;
 
-import com.huzhijian.pgvectordemo.domain.ChatMemory;
+import com.huzhijian.pgvectordemo.domain.ChatHistory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.javassist.bytecode.annotation.CharMemberValue;
-import org.mybatis.spring.annotation.MapperScan;
 
 import java.util.List;
 
@@ -15,12 +13,12 @@ import java.util.List;
 * @Entity com.huzhijian.pgvectordemo.domain.ChatMemory
 */
 @Mapper
-public interface ChatMemoryMapper extends BaseMapper<ChatMemory> {
-    List<ChatMemory> getAllByMemoryId(Object memoryId);
+public interface ChatMemoryMapper extends BaseMapper<ChatHistory> {
+    List<ChatHistory> getAllByMemoryId(Object memoryId);
 
     void delAllByMemoryId(Object memoryId);
 
-    boolean insertBatch(List<ChatMemory> list);
+    boolean insertBatch(List<ChatHistory> list);
 }
 
 

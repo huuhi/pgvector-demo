@@ -1,7 +1,7 @@
 package com.huzhijian.pgvectordemo.demo1;
 
 import com.google.gson.Gson;
-import com.huzhijian.pgvectordemo.domain.ChatMemory;
+import com.huzhijian.pgvectordemo.domain.ChatHistory;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ChatMessageDeserializer;
@@ -26,13 +26,12 @@ import java.util.List;
 public class PgChatMemoryStore implements ChatMemoryStore {
     @Resource
     private ChatMemoryService chatMemoryService;
-    private final Gson gson=new Gson();
 
     @Override
     public List<ChatMessage> getMessages(Object o) {
         if (o==null||o=="") return List.of();
 //        一般情况下memoryId都是字符串
-        List<ChatMemory> chatMemories = chatMemoryService.getByMemoryId(o);
+        List<ChatHistory> chatMemories = chatMemoryService.getByMemoryId(o);
         if (chatMemories==null||chatMemories.isEmpty()) return List.of();
         return chatMemories.stream().map(entity->ChatMessageDeserializer
                 .messageFromJson(entity.getContent())).toList();
@@ -42,18 +41,18 @@ public class PgChatMemoryStore implements ChatMemoryStore {
     public void updateMessages(Object sessionId, List<ChatMessage> list) {
         if (sessionId==null||sessionId=="") throw new RuntimeException("会话ID不能为NULL/空");
         chatMemoryService.delByMemoryId(sessionId);
-        ArrayList<ChatMemory> insertList = new ArrayList<>();
+        ArrayList<ChatHistory> insertList = new ArrayList<>();
         for (ChatMessage chatMessage : list) {
             log.info("类型：{},chatMessage:{}",chatMessage.type(),chatMessage);
 //
             String jsonString = ChatMessageSerializer.messageToJson(chatMessage);
             log.info("JSON:{}",jsonString);
-            ChatMemory chatMemory = ChatMemory.builder()
+            ChatHistory chatHistory = ChatHistory.builder()
                     .memoryId(sessionId)
                     .role(chatMessage.type().name())
                     .content(jsonString)
                     .build();
-            insertList.add(chatMemory);
+            insertList.add(chatHistory);
         }
         chatMemoryService.insertBatch(insertList);
     }

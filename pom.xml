@@ -63,10 +63,22 @@
             <version>1.12.1-beta21</version>
         </dependency>
 
+<!--        MCP-->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-mcp</artifactId>
+            <version>1.12.1-beta21</version>
+        </dependency>
 
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+            <version>1.12.1-beta21</version>
+        </dependency>
+<!--        Skills-->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-skills</artifactId>
             <version>1.12.1-beta21</version>
         </dependency>
 

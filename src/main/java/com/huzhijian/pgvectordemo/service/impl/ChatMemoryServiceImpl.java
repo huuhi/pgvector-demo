@@ -1,14 +1,14 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.huzhijian.pgvectordemo.domain.ChatMemory;
+import com.huzhijian.pgvectordemo.domain.ChatHistory;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
 import com.huzhijian.pgvectordemo.mapper.ChatMemoryMapper;
 import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.ChatMessageDeserializer;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,14 +17,14 @@ import java.util.List;
 * @createDate 2026-03-25 21:23:32
 */
 @Service
-public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatMemory>
+public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHistory>
     implements ChatMemoryService{
 
     @Resource
     private ChatMemoryMapper mapper;
 
     @Override
-    public List<ChatMemory> getByMemoryId(Object memory) {
+    public List<ChatHistory> getByMemoryId(Object memory) {
         return mapper.getAllByMemoryId(memory);
     }
 
@@ -34,8 +34,16 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatMem
     }
 
     @Override
-    public void insertBatch(List<ChatMemory> list) {
+    public void insertBatch(List<ChatHistory> list) {
         mapper.insertBatch(list);
+    }
+//dev.langchain4j.data.message;
+//dev.langchain4j.data.message.ChatMessage
+    @Override
+    public List<ChatMessage> getHistoryBySessionId(String sessionId) {
+        List<ChatHistory> memoryList = mapper.getAllByMemoryId(sessionId);
+        if (memoryList==null||memoryList.isEmpty()) return List.of();
+        return memoryList.stream().map(m-> ChatMessageDeserializer.messageFromJson(m.getContent())).toList();
     }
 }
 

@@ -16,4 +16,9 @@ public class FileUtilsTest {
         String extension = getExtension(fileName);
         System.out.println(extension);
     }
+
+    @Test
+    void getPath(){
+        System.out.println(System.getProperty("user.home"));
+    }
 }
