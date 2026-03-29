@@ -1,10 +1,9 @@
 package com.huzhijian.pgvectordemo.controller;
 
 import com.huzhijian.pgvectordemo.demo1.PgChatMemoryStore;
+import com.huzhijian.pgvectordemo.domain.dto.MessageDTO;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
 import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.ChatMessageDeserializer;
-import dev.langchain4j.data.message.ChatMessageSerializer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +28,14 @@ public class SessionController {
 
 
     @GetMapping("/{sessionId}/history")
-    public ResponseEntity<String> getHistoryBySessionId(@PathVariable String sessionId){
+    public ResponseEntity<List<MessageDTO>> getHistoryBySessionId(@PathVariable String sessionId){
         List<ChatMessage> history=pgChatMemoryStore.getMessages(sessionId);
-        String json = ChatMessageSerializer.messagesToJson(history);
-        return ResponseEntity.ok(json);
+        List<MessageDTO> histories=chatMemoryService.getHistory(history);
+        return ResponseEntity.ok(histories);
     }
-
+    @DeleteMapping("/{sessionId}/history")
+    public ResponseEntity<String> DelHistoryBySessionId(@PathVariable String sessionId){
+        chatMemoryService.delByMemoryId(sessionId);
+        return ResponseEntity.ok("删除成功");
+    }
 }

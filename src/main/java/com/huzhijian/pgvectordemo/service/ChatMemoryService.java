@@ -2,6 +2,7 @@ package com.huzhijian.pgvectordemo.service;
 
 import com.huzhijian.pgvectordemo.domain.ChatHistory;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.huzhijian.pgvectordemo.domain.dto.MessageDTO;
 import dev.langchain4j.data.message.ChatMessage;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface ChatMemoryService extends IService<ChatHistory> {
     void insertBatch(List<ChatHistory> list);
 
     List<ChatMessage> getHistoryBySessionId(String sessionId);
+
+    List<MessageDTO> getHistory(List<ChatMessage> history);
 }

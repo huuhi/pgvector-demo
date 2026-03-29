@@ -32,7 +32,7 @@ public class SeeController {
         if (memoryId==null||memoryId==""){
             memoryId= UUID.randomUUID().toString();
         }
-        TokenStream tokenStream = chatAssistant.chat(UserMessage.from(message),memoryId);
+        TokenStream tokenStream = chatAssistant.chat(message,memoryId);
         tokenStream.onPartialThinking(thinking -> {
             try {
                 sseEmitter.send("[思考中]" + thinking.text());

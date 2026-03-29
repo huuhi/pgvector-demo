@@ -19,3 +19,31 @@
 - 工作目录大概是这样子的:workplace/user/.. 目录下放着skill，mcp配置等信息，然后命令白名单建一张表来存储可能好一点
 - 还有就是要返回工具调用的过程，让AI的操作透明化
 - 返回历史记录这里可能还需要改进一下
+
+### 3.29
+
+今天把返回历史记录的问题搞定了，不过目前只支持文本，如果之后要图文并发那还要再处理一下
+AI的那个接口
+```java
+import dev.langchain4j.data.message.UserMessage;
+
+TokenStream chat(@UserMessage UserMessage msg, @MemoryId Object memoryId);
+```
+JSON是这样子:
+```json
+{
+  "contents": [{
+    "text": "UserMessage { name = null, contents = [TextContent { text =\"那帮我看看今天佛山天气怎么样\" }], attributes = {} }",
+    "type": "TEXT"
+  }],
+  "type": "USER"
+}
+```
+
+这样子写会出现嵌套的情况，会很难受，导致用户的消息变成这样子:
+```text
+UserMessage { name = null, contents = [TextContent { text = "测试，你只需要回复SUCCESS" }], attributes = {} }
+```
+修改成字符串了，已老实，之后再考虑图文并发吧
+
+

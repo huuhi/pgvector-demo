@@ -11,5 +11,5 @@ import dev.langchain4j.service.UserMessage;
  * 说明:
  */
 public interface ChatAssistant {
-    TokenStream chat(@UserMessage dev.langchain4j.data.message.UserMessage msg, @MemoryId Object memoryId);
+    TokenStream chat(@UserMessage String msg, @MemoryId Object memoryId);
 }

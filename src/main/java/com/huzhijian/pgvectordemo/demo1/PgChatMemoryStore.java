@@ -1,6 +1,5 @@
 package com.huzhijian.pgvectordemo.demo1;
 
-import com.google.gson.Gson;
 import com.huzhijian.pgvectordemo.domain.ChatHistory;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
 import dev.langchain4j.data.message.ChatMessage;
@@ -10,6 +9,7 @@ import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +38,13 @@ public class PgChatMemoryStore implements ChatMemoryStore {
     }
 
     @Override
+    @Transactional
     public void updateMessages(Object sessionId, List<ChatMessage> list) {
         if (sessionId==null||sessionId=="") throw new RuntimeException("会话ID不能为NULL/空");
         chatMemoryService.delByMemoryId(sessionId);
         ArrayList<ChatHistory> insertList = new ArrayList<>();
         for (ChatMessage chatMessage : list) {
             log.info("类型：{},chatMessage:{}",chatMessage.type(),chatMessage);
-//
             String jsonString = ChatMessageSerializer.messageToJson(chatMessage);
             log.info("JSON:{}",jsonString);
             ChatHistory chatHistory = ChatHistory.builder()
