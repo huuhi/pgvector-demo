@@ -41,18 +41,23 @@ public class PgChatMemoryStore implements ChatMemoryStore {
     @Transactional
     public void updateMessages(Object sessionId, List<ChatMessage> list) {
         if (sessionId==null||sessionId=="") throw new RuntimeException("会话ID不能为NULL/空");
-        chatMemoryService.delByMemoryId(sessionId);
+//        chatMemoryService.delByMemoryId(sessionId);
         ArrayList<ChatHistory> insertList = new ArrayList<>();
-        for (ChatMessage chatMessage : list) {
-            log.info("类型：{},chatMessage:{}",chatMessage.type(),chatMessage);
-            String jsonString = ChatMessageSerializer.messageToJson(chatMessage);
-            log.info("JSON:{}",jsonString);
-            ChatHistory chatHistory = ChatHistory.builder()
-                    .memoryId(sessionId)
-                    .role(chatMessage.type().name())
-                    .content(jsonString)
-                    .build();
-            insertList.add(chatHistory);
+//        只添加增量数据
+        int count = chatMemoryService.getCountBySessionID(sessionId.toString());
+        if (list.size()>count){
+            List<ChatMessage> needAdd = list.subList(count, list.size());
+            for (ChatMessage chatMessage : needAdd) {
+                log.info("类型：{},chatMessage:{}",chatMessage.type(),chatMessage);
+                String jsonString = ChatMessageSerializer.messageToJson(chatMessage);
+                log.info("JSON:{}",jsonString);
+                ChatHistory chatHistory = ChatHistory.builder()
+                        .memoryId(sessionId)
+                        .role(chatMessage.type().name())
+                        .content(jsonString)
+                        .build();
+                insertList.add(chatHistory);
+            }
         }
         chatMemoryService.insertBatch(insertList);
     }

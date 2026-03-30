@@ -20,4 +20,6 @@ public interface ChatMemoryService extends IService<ChatHistory> {
     List<ChatMessage> getHistoryBySessionId(String sessionId);
 
     List<MessageDTO> getHistory(List<ChatMessage> history);
+
+    int getCountBySessionID(String sessionId);
 }

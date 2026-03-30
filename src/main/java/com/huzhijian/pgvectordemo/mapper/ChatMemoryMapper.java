@@ -3,6 +3,7 @@ package com.huzhijian.pgvectordemo.mapper;
 import com.huzhijian.pgvectordemo.domain.ChatHistory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public interface ChatMemoryMapper extends BaseMapper<ChatHistory> {
     void delAllByMemoryId(Object memoryId);
 
     boolean insertBatch(List<ChatHistory> list);
+
+    @Select("select count(id) from chat_memory where memory_id=#{sessionId}::uuid")
+    int getCountByMemoryId(String sessionId);
 }
 
 

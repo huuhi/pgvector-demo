@@ -36,28 +36,15 @@ public class SeeController {
         tokenStream.onPartialThinking(thinking -> {
             try {
                 sseEmitter.send("[思考中]" + thinking.text());
-                log.info("思考内容：{}", thinking.text());
             } catch (IOException e) {
                 sseEmitter.completeWithError(e);
             }
         }).onPartialResponse(token -> {
             try {
                 sseEmitter.send(token);
-                log.info("正文:{}", token);
             } catch (IOException e) {
                 sseEmitter.completeWithError(e);
             }
-        }).onPartialToolCall(partialToolCall -> {
-            String s = partialToolCall.partialArguments();
-            String name = partialToolCall.name();
-            log.info("工具名称:{},参数：{}", name, s);
-        }).onToolExecuted(toolExecution -> {
-//            调用工具完成
-            ToolExecutionRequest request = toolExecution.request();
-            String arguments = request.arguments();
-            String toolName = request.name();
-            String result = toolExecution.result();
-            log.info("工具调用结束,名称:{}, 参数:{} ,结果:{}", toolName, arguments, result);
         }).onCompleteResponse(response -> {
             try {
                 sseEmitter.send("\n\n[完毕]");

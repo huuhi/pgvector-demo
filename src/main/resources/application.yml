@@ -3,6 +3,8 @@ spring:
     name: pgvector-demo
   profiles:
     active: dev
+skills-path:
+  win: E:\jcode\demo\pgvector-demo
 logging:
   level:
     com:

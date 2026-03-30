@@ -37,6 +37,10 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHis
 
     @Override
     public void insertBatch(List<ChatHistory> list) {
+        if (list.isEmpty()){
+            log.debug("插入失败,消息为空");
+            return;
+        }
         mapper.insertBatch(list);
     }
 //dev.langchain4j.data.message;
@@ -105,6 +109,11 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHis
             }
             return messageDTOBuilder.build();
         }).toList();
+    }
+
+    @Override
+    public int getCountBySessionID(String sessionId) {
+        return mapper.getCountByMemoryId(sessionId);
     }
 }
 

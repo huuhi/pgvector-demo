@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 upload/
+skills-lock.json
+.claude
 ### STS ###
 .apt_generated
 .classpath

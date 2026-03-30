@@ -63,6 +63,11 @@
             <version>1.12.1-beta21</version>
         </dependency>
 
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.19.0</version>
+        </dependency>
 <!--        MCP-->
         <dependency>
             <groupId>dev.langchain4j</groupId>
@@ -74,6 +79,13 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
             <version>1.12.1-beta21</version>
+        </dependency>
+
+<!--        执行命令  -->
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-exec</artifactId>
+            <version>1.12</version>
         </dependency>
 <!--        Skills-->
         <dependency>

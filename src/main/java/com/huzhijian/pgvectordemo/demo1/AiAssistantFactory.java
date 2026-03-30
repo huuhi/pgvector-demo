@@ -1,5 +1,6 @@
 package com.huzhijian.pgvectordemo.demo1;
 
+import com.huzhijian.pgvectordemo.tools.ExecutionDirectiveTool;
 import com.huzhijian.pgvectordemo.tools.GetWeather;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.McpClient;
@@ -37,6 +38,8 @@ public class AiAssistantFactory {
     private McpToolProvider provider;
     @Resource
     private  GetWeather getWeather;
+    @Resource
+    private ExecutionDirectiveTool  directiveTool;
 
 
 //  检索器
@@ -55,17 +58,17 @@ public class AiAssistantFactory {
 
     @Bean
     public ChatAssistant chatAssistant(ContentRetriever contentRetriever){
-        Path path = Path.of(System.getProperty("user.home")+"/.agents/skills");
+        Path path = Path.of("E:\\jcode\\demo\\pgvector-demo\\.claude\\skills");
         Skills skills = Skills.from(FileSystemSkillLoader.loadSkills(path));
         return AiServices.builder(ChatAssistant.class)
                 .streamingChatModel(streamingChatModel)
                 .contentRetriever(contentRetriever)
-                .tools(getWeather)
+                .tools(getWeather,directiveTool)
                 .toolProviders(provider,skills.toolProvider())
                 .chatMemoryProvider(
                         memoryId-> MessageWindowChatMemory.builder()
                         .chatMemoryStore(chatMemoryStore)
-                        .id(memoryId).maxMessages(20).build())
+                        .id(memoryId).maxMessages(50).build())
                 .build();
     }
 }

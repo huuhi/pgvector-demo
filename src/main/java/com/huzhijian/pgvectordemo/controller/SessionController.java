@@ -17,6 +17,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/session")
+@CrossOrigin(origins = "*")
 public class SessionController {
     private final ChatMemoryService chatMemoryService;
     private final PgChatMemoryStore pgChatMemoryStore;

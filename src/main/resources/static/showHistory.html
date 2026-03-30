@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简 AI 对话助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 隐藏滚动条但保留功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .prose pre { background-color: #f3f4f6; padding: 1rem; border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="bg-gray-50 h-screen flex flex-col">
+
+<!-- 顶部导航 -->
+<header class="bg-white border-b p-4 flex justify-between items-center shadow-sm">
+    <h1 class="text-xl font-bold text-gray-800"><i class="fas fa-robot text-blue-500 mr-2"></i>AI Assistant</h1>
+    <div class="flex gap-2">
+        <input id="sessionId" type="text" value="default-session" class="border rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+        <button onclick="loadHistory()" class="bg-blue-600 text-white px-4 py-1 rounded text-sm hover:bg-blue-700 transition">加载历史</button>
+    </div>
+</header>
+
+<!-- 聊天内容区 -->
+<main id="chat-box" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 no-scrollbar">
+    <!-- 默认欢迎语 -->
+    <div class="flex justify-center text-gray-400 text-sm italic">输入 Session ID 并点击加载以获取对话记录</div>
+</main>
+
+<!-- 底部状态 -->
+<footer class="p-4 text-center text-xs text-gray-400">
+    Backend: localhost:8080 | Protocol: JSON
+</footer>
+
+<script>
+    async function loadHistory() {
+        const sessionId = document.getElementById('sessionId').value;
+        const chatBox = document.getElementById('chat-box');
+
+        try {
+            const response = await fetch(`http://localhost:8080/session/${sessionId}/history`);
+            if (!response.ok) throw new Error('网络请求失败');
+            const data = await response.json();
+
+            chatBox.innerHTML = ''; // 清空当前视图
+
+            data.forEach(item => {
+                const messageEl = renderMessage(item);
+                chatBox.appendChild(messageEl);
+            });
+
+            // 滚动到底部
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+
+        } catch (error) {
+            console.error(error);
+            chatBox.innerHTML = `<div class="text-red-500 text-center">错误: ${error.message} (请检查后端跨域配置)</div>`;
+        }
+    }
+
+    function renderMessage(item) {
+        const wrapper = document.createElement('div');
+        wrapper.className = item.type === 'USER' ? 'flex justify-end' : 'flex justify-start';
+
+        if (item.type === 'USER') {
+            wrapper.innerHTML = `
+                <div class="max-w-[80%] bg-blue-600 text-white rounded-2xl px-4 py-2 shadow-sm">
+                    ${item.content}
+                </div>
+            `;
+        }
+        else if (item.type === 'AI') {
+            let innerHTML = `<div class="max-w-[90%] bg-white border border-gray-200 rounded-2xl p-4 shadow-sm text-gray-800">`;
+
+            // 1. 渲染思考过程 (Thinking)
+            if (item.thinking) {
+                innerHTML += `
+                    <details class="mb-3 group" open>
+                        <summary class="text-xs text-gray-400 cursor-pointer list-none flex items-center gap-1 group-open:mb-2">
+                            <i class="fas fa-brain text-purple-400"></i> 思考过程
+                            <i class="fas fa-chevron-right text-[10px] transition-transform group-open:rotate-90"></i>
+                        </summary>
+                        <div class="text-sm text-gray-500 italic border-l-2 border-gray-100 pl-3 py-1 bg-gray-50 rounded-r">
+                            ${item.thinking.replace(/\n/g, '<br>')}
+                        </div>
+                    </details>
+                `;
+            }
+
+            // 2. 渲染工具调用 (Tool Requests)
+            if (item.toolRequestList && item.toolRequestList.length > 0) {
+                item.toolRequestList.forEach(tool => {
+                    innerHTML += `
+                        <div class="flex items-center gap-2 text-xs text-blue-600 font-mono bg-blue-50 p-2 rounded mb-2">
+                            <i class="fas fa-tools animate-pulse"></i>
+                            执行工具: ${tool.toolName} (${tool.arguments})
+                        </div>
+                    `;
+                });
+            }
+
+            // 3. 渲染主内容 (Content)
+            if (item.content) {
+                innerHTML += `<div class="prose prose-blue max-w-none">${marked.parse(item.content)}</div>`;
+            } else if (!item.thinking && (!item.toolRequestList || item.toolRequestList.length === 0)) {
+                // 如果啥都没有，可能是等待状态
+                innerHTML += `<div class="flex gap-1"><div class="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.2s]"></div><div class="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.4s]"></div></div>`;
+            }
+
+            innerHTML += `</div>`;
+            wrapper.innerHTML = innerHTML;
+        }
+        else if (item.type === 'TOOL_EXECUTION_RESULT') {
+            // 工具结果渲染成一个小的状态标签
+            wrapper.className = "flex justify-start ml-4";
+            wrapper.innerHTML = `
+                <div class="text-[11px] bg-green-50 text-green-700 border border-green-100 px-2 py-0.5 rounded flex items-center gap-1">
+                    <i class="fas fa-check-circle"></i>
+                    ${item.toolResultDTO.toolName} 结果: ${item.toolResultDTO.result}
+                </div>
+            `;
+        }
+
+        return wrapper;
+    }
+</script>
+</body>
+</html>

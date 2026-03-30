@@ -16,13 +16,11 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.content},#{item.role}::role_em,#{item.memoryId}::uuid)
         </foreach>
-
     </insert>
     <delete id="delAllByMemoryId">
         delete from chat_memory where memory_id=#{memoryId}::uuid
     </delete>
     <select id="getAllByMemoryId" resultMap="BaseResultMap">
-      select * from chat_memory where memory_id=#{memoryId}::uuid
-
+      select * from chat_memory where memory_id=#{memoryId}::uuid order by id limit 19;
     </select>
 </mapper>

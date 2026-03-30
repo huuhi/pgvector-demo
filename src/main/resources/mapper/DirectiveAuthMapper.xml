@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huzhijian.pgvectordemo.mapper.DirectiveAuthMapper">
+
+    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.DirectiveAuth">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="directive" column="directive" jdbcType="VARCHAR"/>
+            <result property="memoryId" column="memory_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,directive,memory_id
+    </sql>
+</mapper>
