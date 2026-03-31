@@ -4,7 +4,6 @@ import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
-import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport;
 import dev.langchain4j.mcp.client.transport.http.StreamableHttpMcpTransport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +23,6 @@ public class McpConfig {
     public McpClient modelScopeMcpClient(){
             McpTransport mcpTransport = StreamableHttpMcpTransport.builder()
                 .url("https://mcp.api-inference.modelscope.net/6d1c1a7c23664d/mcp")
-                .logRequests(true)
-                .logResponses(true)
                 .timeout(Duration.ofSeconds(60))
                 .build();
             return new DefaultMcpClient.Builder().transport(mcpTransport).build();

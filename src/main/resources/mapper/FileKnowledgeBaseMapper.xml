@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huzhijian.pgvectordemo.mapper.FileKnowledgeBaseMapper">
 
-    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.FileKnowledgeBase">
+    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.entity.FileKnowledgeBase">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="fileId" column="file_id" jdbcType="BIGINT"/>
             <result property="knowledgeBaseId" column="knowledge_base_id" jdbcType="INTEGER"/>

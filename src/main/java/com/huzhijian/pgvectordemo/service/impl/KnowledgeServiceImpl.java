@@ -1,8 +1,6 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
-import com.huzhijian.pgvectordemo.config.ServerConfig;
-import com.huzhijian.pgvectordemo.demo1.PgVectorEmbeddingFactory;
-import com.huzhijian.pgvectordemo.domain.KnowledgeFiles;
+import com.huzhijian.pgvectordemo.domain.entity.KnowledgeFiles;
 import com.huzhijian.pgvectordemo.service.KnowledgeService;
 import com.huzhijian.pgvectordemo.utils.FileUtils;
 import dev.langchain4j.data.document.Document;
@@ -10,20 +8,16 @@ import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
-import dev.langchain4j.data.document.splitter.DocumentByLineSplitter;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
-import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tika.config.TikaConfigSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

@@ -1,6 +1,6 @@
 package com.huzhijian.pgvectordemo.service;
 
-import com.huzhijian.pgvectordemo.domain.KnowledgeBase;
+import com.huzhijian.pgvectordemo.domain.entity.KnowledgeBase;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

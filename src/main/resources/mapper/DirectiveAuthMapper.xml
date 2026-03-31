@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huzhijian.pgvectordemo.mapper.DirectiveAuthMapper">
 
-    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.DirectiveAuth">
+    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.entity.DirectiveAuth">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="directive" column="directive" jdbcType="VARCHAR"/>
             <result property="memoryId" column="memory_id" jdbcType="VARCHAR"/>

@@ -1,6 +1,6 @@
 package com.huzhijian.pgvectordemo.service;
 
-import com.huzhijian.pgvectordemo.domain.DirectiveAuth;
+import com.huzhijian.pgvectordemo.domain.entity.DirectiveAuth;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

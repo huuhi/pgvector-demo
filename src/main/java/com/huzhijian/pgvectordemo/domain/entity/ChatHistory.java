@@ -1,4 +1,4 @@
-package com.huzhijian.pgvectordemo.domain;
+package com.huzhijian.pgvectordemo.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

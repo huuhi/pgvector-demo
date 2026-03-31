@@ -1,9 +1,7 @@
 package com.huzhijian.pgvectordemo.controller;
 
-import com.huzhijian.pgvectordemo.demo1.PgChatMemoryStore;
-import com.huzhijian.pgvectordemo.domain.dto.MessageDTO;
+import com.huzhijian.pgvectordemo.domain.vo.MessageVO;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
-import dev.langchain4j.data.message.ChatMessage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,18 +18,15 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class SessionController {
     private final ChatMemoryService chatMemoryService;
-    private final PgChatMemoryStore pgChatMemoryStore;
 
-    public SessionController(ChatMemoryService chatMemoryService, PgChatMemoryStore pgChatMemoryStore) {
+    public SessionController(ChatMemoryService chatMemoryService) {
         this.chatMemoryService = chatMemoryService;
-        this.pgChatMemoryStore = pgChatMemoryStore;
     }
 
 
     @GetMapping("/{sessionId}/history")
-    public ResponseEntity<List<MessageDTO>> getHistoryBySessionId(@PathVariable String sessionId){
-        List<ChatMessage> history=pgChatMemoryStore.getMessages(sessionId);
-        List<MessageDTO> histories=chatMemoryService.getHistory(history);
+    public ResponseEntity<List<MessageVO>> getHistoryBySessionId(@PathVariable String sessionId){
+        List<MessageVO> histories=chatMemoryService.getHistory(sessionId);
         return ResponseEntity.ok(histories);
     }
     @DeleteMapping("/{sessionId}/history")

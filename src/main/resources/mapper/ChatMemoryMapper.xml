@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.huzhijian.pgvectordemo.mapper.ChatMemoryMapper">
 
-    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.ChatHistory">
+    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.entity.ChatHistory">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="role" column="role" jdbcType="OTHER"/>
@@ -21,6 +21,7 @@
         delete from chat_memory where memory_id=#{memoryId}::uuid
     </delete>
     <select id="getAllByMemoryId" resultMap="BaseResultMap">
-      select * from chat_memory where memory_id=#{memoryId}::uuid order by id limit 19;
+      select * from chat_memory where memory_id=#{memoryId}::uuid
+    order by id
     </select>
 </mapper>

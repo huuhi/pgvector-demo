@@ -5,8 +5,10 @@ import com.huzhijian.pgvectordemo.tools.GetWeather;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.memory.chat.TokenWindowChatMemory;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
@@ -43,6 +45,7 @@ public class AiAssistantFactory {
 
 
 //  检索器
+//  TODO 建议写成一个工具！
     @Bean
     public ContentRetriever contentRetriever(EmbeddingModel model, Function<String, PgVectorEmbeddingStore> factory){
         PgVectorEmbeddingStore store = factory.apply("test");
@@ -66,9 +69,9 @@ public class AiAssistantFactory {
                 .tools(getWeather,directiveTool)
                 .toolProviders(provider,skills.toolProvider())
                 .chatMemoryProvider(
-                        memoryId-> MessageWindowChatMemory.builder()
-                        .chatMemoryStore(chatMemoryStore)
-                        .id(memoryId).maxMessages(50).build())
+                        memoryId-> TokenWindowChatMemory.builder()
+                        .chatMemoryStore(chatMemoryStore).maxTokens(8000,new OpenAiTokenCountEstimator("gpt-4o"))
+                        .id(memoryId).build())
                 .build();
     }
 }

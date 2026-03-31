@@ -1,8 +1,8 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.huzhijian.pgvectordemo.domain.ChatHistory;
-import com.huzhijian.pgvectordemo.domain.dto.MessageDTO;
+import com.huzhijian.pgvectordemo.domain.entity.ChatHistory;
+import com.huzhijian.pgvectordemo.domain.vo.MessageVO;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
 import com.huzhijian.pgvectordemo.mapper.ChatMemoryMapper;
 import dev.langchain4j.data.message.*;
@@ -27,6 +27,7 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHis
 
     @Override
     public List<ChatHistory> getByMemoryId(Object memory) {
+//        输入任意字符，则过滤工具消息
         return mapper.getAllByMemoryId(memory);
     }
 
@@ -43,21 +44,16 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHis
         }
         mapper.insertBatch(list);
     }
-//dev.langchain4j.data.message;
-//dev.langchain4j.data.message.ChatMessage
-    @Override
-    public List<ChatMessage> getHistoryBySessionId(String sessionId) {
-        List<ChatHistory> memoryList = mapper.getAllByMemoryId(sessionId);
-        if (memoryList==null||memoryList.isEmpty()) return List.of();
-        return memoryList.stream().map(m-> ChatMessageDeserializer.messageFromJson(m.getContent())).toList();
-    }
+
 
     @Override
-    public List<MessageDTO> getHistory(List<ChatMessage> history) {
-
-
+    public List<MessageVO> getHistory(String sessionId) {
+        List<ChatHistory> chatHistories = mapper.getAllByMemoryId(sessionId);
+        if (chatHistories==null||chatHistories.isEmpty()) return List.of();
+        List<ChatMessage> history = chatHistories.stream().map(entity -> ChatMessageDeserializer
+                .messageFromJson(entity.getContent())).toList();
         return history.stream().map(msg->{
-            MessageDTO.MessageDTOBuilder messageDTOBuilder = MessageDTO
+            MessageVO.MessageVOBuilder messageVOBuilder = MessageVO
                     .builder()
                     .type(msg.type().name());
             switch (msg) {
@@ -67,7 +63,7 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHis
                     log.info("userMessage:{}",userMessage);
                     userMessage.contents().forEach(content->{
                         if(content instanceof  TextContent textContent){
-                            messageDTOBuilder.content(textContent.text());
+                            messageVOBuilder.content(textContent.text());
                         }
                     });
 
@@ -78,7 +74,7 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHis
                         要进行转换
                         */
                         log.info("内容：{}",text);
-                        messageDTOBuilder.content(text);
+                        messageVOBuilder.content(text);
                     }
 //                	"contents": [{
                 //		"text": "UserMessage { name = null, contents = [TextContent { text = \"广东职业技术学院张政康的具体信息\" }], attributes = {} }",
@@ -87,27 +83,27 @@ public class ChatMemoryServiceImpl extends ServiceImpl<ChatMemoryMapper, ChatHis
                 //	"type": "USER"
                 }
                 case AiMessage aiMessage -> {
-                    messageDTOBuilder.content(aiMessage.text());
-                    messageDTOBuilder.thinking(aiMessage.thinking());
+                    messageVOBuilder.content(aiMessage.text());
+                    messageVOBuilder.thinking(aiMessage.thinking());
 //                toolExecutionRequests
-                    List<MessageDTO.ToolRequestDTO> requestDTOList = aiMessage.toolExecutionRequests().stream().map(request -> MessageDTO.ToolRequestDTO.builder()
+                    List<MessageVO.ToolRequestVO> requestVOList = aiMessage.toolExecutionRequests().stream().map(request -> MessageVO.ToolRequestVO.builder()
                             .toolName(request.name())
                             .id(request.id())
                             .arguments(request.arguments()).build()).toList();
-                    messageDTOBuilder.toolRequestList(requestDTOList);
+                    messageVOBuilder.toolRequestList(requestVOList);
                 }
                 case ToolExecutionResultMessage toolResult -> {
-                    MessageDTO.ToolResultDTO resultDTO = MessageDTO.ToolResultDTO.builder()
+                    MessageVO.ToolResultVO resultVO = MessageVO.ToolResultVO.builder()
                             .isError(toolResult.isError())
                             .result(toolResult.text())
                             .toolName(toolResult.toolName())
                             .id(toolResult.id())
                             .build();
-                    messageDTOBuilder.toolResultDTO(resultDTO);
+                    messageVOBuilder.toolResultVO(resultVO);
                 }
-                default -> throw new IllegalStateException("Unknown Type: " + msg);
+                default -> log.info("其他类型，暂时不处理");
             }
-            return messageDTOBuilder.build();
+            return messageVOBuilder.build();
         }).toList();
     }
 

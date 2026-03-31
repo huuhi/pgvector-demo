@@ -1,6 +1,6 @@
 package com.huzhijian.pgvectordemo.mapper;
 
-import com.huzhijian.pgvectordemo.domain.ChatHistory;
+import com.huzhijian.pgvectordemo.domain.entity.ChatHistory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -15,6 +15,7 @@ import java.util.List;
 */
 @Mapper
 public interface ChatMemoryMapper extends BaseMapper<ChatHistory> {
+    //输入任意字符过滤工具调用消息，节省上下文。
     List<ChatHistory> getAllByMemoryId(Object memoryId);
 
     void delAllByMemoryId(Object memoryId);

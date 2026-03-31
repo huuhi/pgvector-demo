@@ -1,7 +1,7 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.huzhijian.pgvectordemo.domain.KnowledgeFiles;
+import com.huzhijian.pgvectordemo.domain.entity.KnowledgeFiles;
 import com.huzhijian.pgvectordemo.service.FilesService;
 import com.huzhijian.pgvectordemo.mapper.FilesMapper;
 import org.springframework.stereotype.Service;

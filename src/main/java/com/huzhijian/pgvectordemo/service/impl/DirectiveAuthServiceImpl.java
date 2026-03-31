@@ -1,11 +1,10 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.huzhijian.pgvectordemo.domain.DirectiveAuth;
+import com.huzhijian.pgvectordemo.domain.entity.DirectiveAuth;
 import com.huzhijian.pgvectordemo.service.DirectiveAuthService;
 import com.huzhijian.pgvectordemo.mapper.DirectiveAuthMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
 * @author windows

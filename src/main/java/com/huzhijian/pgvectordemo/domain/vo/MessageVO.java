@@ -1,4 +1,4 @@
-package com.huzhijian.pgvectordemo.domain.dto;
+package com.huzhijian.pgvectordemo.domain.vo;
 
 import lombok.Builder;
 import lombok.Data;
@@ -13,19 +13,19 @@ import java.util.List;
  */
 @Builder
 @Data
-public class MessageDTO {
+public class MessageVO {
     private String type;
     private String content;
     private String thinking;
-//    private UserMessageDTO userMessageDTO;
+//    private UserMessageVO userMessageVO;
 //    工具执行结果
-    private ToolResultDTO toolResultDTO;
+    private ToolResultVO toolResultVO;
 //    工具请求参数
-    private List<ToolRequestDTO> toolRequestList;
+    private List<ToolRequestVO> toolRequestList;
     private String toolName;
     @Data
     @Builder
-    public static class UserMessageDTO{
+    public static class UserMessageVO{
         /**
          * "contents": [{
             "text": "UserMessage { name = null, contents = [TextContent { text = \"广东职业技术学院张政康的具体信息\" }], attributes = {} }",
@@ -39,7 +39,7 @@ public class MessageDTO {
     }
     @Data
     @Builder
-    public static class ToolRequestDTO{
+    public static class ToolRequestVO{
         /**
          "toolExecutionRequests": [{
          "id": "call_58627d966c2d42828dc0e04b",
@@ -54,7 +54,7 @@ public class MessageDTO {
     }
     @Data
     @Builder
-    public static class ToolResultDTO{
+    public static class ToolResultVO{
         /**
          * {"id":"call_58627d966c2d42828dc0e04b",
          * "toolName":"getDate","text":"2026/03/28",

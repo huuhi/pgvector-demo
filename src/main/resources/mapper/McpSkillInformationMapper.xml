@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huzhijian.pgvectordemo.mapper.McpSkillInformationMapper">
+
+    <resultMap id="BaseResultMap" type="com.huzhijian.pgvectordemo.domain.entity.McpSkillInformation">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="isMcp" column="is_mcp" jdbcType="BOOLEAN"/>
+            <result property="mcpType" column="mcp_type" jdbcType="VARCHAR"/>
+            <result property="sourcePath" column="source_path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,is_mcp,
+        mcp_type,source_path
+    </sql>
+</mapper>

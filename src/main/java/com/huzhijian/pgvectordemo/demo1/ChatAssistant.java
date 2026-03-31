@@ -1,8 +1,6 @@
 package com.huzhijian.pgvectordemo.demo1;
 
-import dev.langchain4j.service.MemoryId;
-import dev.langchain4j.service.TokenStream;
-import dev.langchain4j.service.UserMessage;
+import dev.langchain4j.service.*;
 
 /**
  * @author 胡志坚
@@ -11,5 +9,6 @@ import dev.langchain4j.service.UserMessage;
  * 说明:
  */
 public interface ChatAssistant {
-    TokenStream chat(@UserMessage String msg, @MemoryId Object memoryId);
+    @SystemMessage("当前会话ID为:{{sessionId}}，适当的加载skill学习以及合理运用提供的工具")
+    TokenStream chat(@UserMessage String msg,   @V("sessionId") @MemoryId Object memoryId);
 }

@@ -1,7 +1,7 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.huzhijian.pgvectordemo.domain.KnowledgeBase;
+import com.huzhijian.pgvectordemo.domain.entity.KnowledgeBase;
 import com.huzhijian.pgvectordemo.service.KnowledgeBaseService;
 import com.huzhijian.pgvectordemo.mapper.KnowledgeBaseMapper;
 import org.springframework.stereotype.Service;

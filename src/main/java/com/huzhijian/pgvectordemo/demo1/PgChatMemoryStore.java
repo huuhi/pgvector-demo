@@ -1,6 +1,6 @@
 package com.huzhijian.pgvectordemo.demo1;
 
-import com.huzhijian.pgvectordemo.domain.ChatHistory;
+import com.huzhijian.pgvectordemo.domain.entity.ChatHistory;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ChatMessageDeserializer;
