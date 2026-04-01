@@ -16,4 +16,12 @@
         id,file_id,knowledge_base_id,
         status,fail_reason
     </sql>
+    <update id="updateBatchById">
+        update file_knowledge_base
+        <foreach collection="list" item="f" separator=",">
+            <set>
+
+            </set>
+        </foreach>
+    </update>
 </mapper>

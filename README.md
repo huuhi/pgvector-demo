@@ -91,3 +91,45 @@ comment on column mcp_skill_information.mcp_type is 'MCP的类型,HTTP或SSE';
 
 搞定了，目前MCP只支持http协议的,sse不支持，本地的也不支持
 目前测试没啥问题。
+
+### 4.1
+
+将RAG检索写成工具
+具体实现:
+```java
+    @Tool("检索知识库")
+    public String ragSearch(@P("查询语句,提取关键词查询")String query){
+        StringBuilder result=new StringBuilder();
+        EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
+                .query(query)
+                .maxResults(3).minScore(0.7)
+                .queryEmbedding(embeddingModel.embed(query).content())
+                .build();
+        log.info("查询：{}",request.query());
+        List<EmbeddingMatch<TextSegment>> matches = pgVectorEmbeddingStore.search(request)
+                .matches();
+        if (matches==null||matches.isEmpty()){
+            return "知识库中未查询到修改知识片段，你可以修改关键词再次尝试查询";
+        }
+        matches.forEach(t->{
+            result.append(t.embedded().text());
+        });
+        return result.toString();
+    }
+```
+
+向量化文件修改成异步
+以及,我真服了啊，这里的实现，我感觉异味有点多，而且这里肯定出bug的，写的我也难受的要死，还好只是demo，我懒得修改了
+```java
+//  TODO 这里的实现依托，fileId是可能重复的，算了算了，毕竟是只是学习demo
+        list.forEach(f->{
+            lambdaUpdate().eq(FileKnowledgeBase::getFileId,f.getFileId())
+                    .update();        
+        });
+```
+
+> 今天感觉基本没学
+> 这个demo到此为止吧。虽然感觉还有很多要学，但是基本的已经会了,之后有时间再来学一下，要去忙四级去了，这几天都没怎么学四级
+> 之后我觉得可以加个编辑文件和读取文件，就这两个，加完我是真没啥想法了，以及执行命令的时候，去让一个AI生成类似于claudecode的那种
+> 这个应该不会很难的。就这样吧~
+> 多agent对我来说应该还有点距离啊，有时间先完成前面的吧，多agent，目前也没时间搞了

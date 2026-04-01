@@ -2,6 +2,7 @@ package com.huzhijian.pgvectordemo.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,6 +11,7 @@ import lombok.Data;
  */
 @TableName(value ="file_knowledge_base")
 @Data
+@Builder
 public class FileKnowledgeBase {
     /**
      * 

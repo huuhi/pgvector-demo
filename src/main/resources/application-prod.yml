@@ -1,0 +1,35 @@
+langchain4j:
+  open-ai:
+    streaming-chat-model:
+      api-key: ${AI_KEY}
+      model-name: qwen3.5-flash
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      return-thinking: true
+      custom-parameters:
+        enable_search: true
+    chat-model:
+      api-key: ${AI_KEY}
+      model-name: qwen3.5-flash
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    embedding-model:
+      api-key: ${AI_KEY}
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      model-name: text-embedding-v4
+      dimensions: 1024
+spring:
+  datasource:
+    url: jdbc:postgresql://${DOCKER_IP}:5432/pg_demo?reWriteBatchedInserts=true
+    password: your password
+    username: your username
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 550000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+upload-path: E:\upload
+mybatis-plus:
+  type-handlers-package: com.huzhijian.pgvectordemo.config
+  mapper-locations: classpath*:/mapper/**/*.xml

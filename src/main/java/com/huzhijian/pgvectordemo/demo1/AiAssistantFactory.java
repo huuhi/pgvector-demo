@@ -3,8 +3,6 @@ package com.huzhijian.pgvectordemo.demo1;
 import com.huzhijian.pgvectordemo.tools.ExecutionDirectiveTool;
 import com.huzhijian.pgvectordemo.tools.GetWeather;
 import dev.langchain4j.mcp.McpToolProvider;
-import dev.langchain4j.mcp.client.McpClient;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.memory.chat.TokenWindowChatMemory;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -12,7 +10,6 @@ import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
-import dev.langchain4j.skills.FileSystemSkill;
 import dev.langchain4j.skills.FileSystemSkillLoader;
 import dev.langchain4j.skills.Skills;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
@@ -49,7 +46,6 @@ public class AiAssistantFactory {
     @Bean
     public ContentRetriever contentRetriever(EmbeddingModel model, Function<String, PgVectorEmbeddingStore> factory){
         PgVectorEmbeddingStore store = factory.apply("test");
-
         return EmbeddingStoreContentRetriever.builder()
                 .embeddingModel(model)
                 .embeddingStore(store)

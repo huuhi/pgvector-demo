@@ -1,6 +1,7 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
 import com.huzhijian.pgvectordemo.domain.entity.KnowledgeFiles;
+import com.huzhijian.pgvectordemo.service.FileKnowledgeBaseService;
 import com.huzhijian.pgvectordemo.service.KnowledgeService;
 import com.huzhijian.pgvectordemo.utils.FileUtils;
 import dev.langchain4j.data.document.Document;
@@ -15,6 +16,7 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,11 +36,13 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private final Function<String, PgVectorEmbeddingStore> factory;
     private final EmbeddingModel embeddingModel;
     private final FileUtils fileUtils;
+    private final FileKnowledgeBaseService fileKnowledgeBaseService;
 
-    public KnowledgeServiceImpl(Function<String, PgVectorEmbeddingStore> factory, EmbeddingModel embeddingModel, FileUtils fileUtils) {
+    public KnowledgeServiceImpl(Function<String, PgVectorEmbeddingStore> factory, EmbeddingModel embeddingModel, FileUtils fileUtils, FileKnowledgeBaseService fileKnowledgeBaseService) {
         this.factory = factory;
         this.embeddingModel = embeddingModel;
         this.fileUtils = fileUtils;
+        this.fileKnowledgeBaseService = fileKnowledgeBaseService;
     }
 
     @Override
@@ -59,18 +63,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
     @Override
     public void insertKnowledgeFile(String table, List<Long> ids) {
-
         List<KnowledgeFiles> files = fileUtils.getFilesById(ids);
         PgVectorEmbeddingStore store = factory.apply(table);
-//        每隔500个字符切分一下，重叠50字符
-        DocumentSplitter splitter = DocumentSplitters.recursive(850, 150);
-        for (KnowledgeFiles file : files) {
-            Document document = FileSystemDocumentLoader.loadDocument(file.getFilePath(), new ApacheTikaDocumentParser());
-            document.metadata().put("fileId",file.getId());
-            List<TextSegment> segments = splitter.split(document);
-            log.info("块大小:{}",segments.size());
-            List<Embedding> content = embeddingModel.embedAll(segments).content();
-            store.addAll(content,segments);
-        }
+        fileKnowledgeBaseService.paresFileAndAddKnowledgeBase(files,store);
     }
 }
