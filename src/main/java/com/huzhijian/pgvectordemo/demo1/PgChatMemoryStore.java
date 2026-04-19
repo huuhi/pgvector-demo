@@ -1,10 +1,12 @@
 package com.huzhijian.pgvectordemo.demo1;
 
+import com.huzhijian.pgvectordemo.context.MessageMetadataContext;
 import com.huzhijian.pgvectordemo.domain.entity.ChatHistory;
 import com.huzhijian.pgvectordemo.service.ChatMemoryService;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ChatMessageDeserializer;
 import dev.langchain4j.data.message.ChatMessageSerializer;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,10 @@ public class PgChatMemoryStore implements ChatMemoryStore {
             List<ChatMessage> needAdd = list.subList(count, list.size());
             for (ChatMessage chatMessage : needAdd) {
                 log.info("类型：{},chatMessage:{}",chatMessage.type(),chatMessage);
+//                存储元数据
+                if (chatMessage instanceof UserMessage userMessage && MessageMetadataContext.get()!=null){
+                    userMessage.attributes().putAll(MessageMetadataContext.get());
+                }
                 String jsonString = ChatMessageSerializer.messageToJson(chatMessage);
                 log.info("JSON:{}",jsonString);
                 ChatHistory chatHistory = ChatHistory.builder()

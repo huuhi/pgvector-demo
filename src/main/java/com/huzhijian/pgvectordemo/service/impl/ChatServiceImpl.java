@@ -1,5 +1,6 @@
 package com.huzhijian.pgvectordemo.service.impl;
 
+import com.huzhijian.pgvectordemo.context.MessageMetadataContext;
 import com.huzhijian.pgvectordemo.demo1.ChatAssistant;
 import com.huzhijian.pgvectordemo.demo1.PgChatMemoryStore;
 import com.huzhijian.pgvectordemo.domain.dto.ChatDTO;
@@ -124,15 +125,10 @@ public class ChatServiceImpl implements ChatService {
         String imageUrl = chatDTO.getImageUrl();
         ImageContent imageContent = ImageContent.from(imageUrl);
         TextContent textContent = TextContent.from(chatDTO.getMsg());
-        UserMessage userMessage = UserMessage.builder()
-                .contents(List.of(imageContent, textContent))
-                .attributes(Map.of("image_url",imageUrl)).build();
-        ChatRequest request = ChatRequest.builder()
-                .messages(userMessage)
-                .build();
+        MessageMetadataContext.set(Map.of("image_url",imageUrl));
 
         ChatAssistant chatAssistant = chatAssistantAiServices.build();
-        TokenStream tokenStream = chatAssistant.chat(request);
+        TokenStream tokenStream = chatAssistant.chat(List.of(imageContent, textContent),sessionId);
         return getSseEmitter(sseEmitter, isFinished, tokenStream);
     }
 

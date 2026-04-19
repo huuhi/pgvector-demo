@@ -16,7 +16,4 @@ import java.util.List;
 public interface ChatAssistant {
     @SystemMessage("当前会话ID为:{{sessionId}}，适当的加载skill学习以及合理运用提供的工具")
     TokenStream chat(@UserMessage List<Content> contents, @V("sessionId") @MemoryId Object memoryId);
-
-
-    TokenStream chat(ChatRequest request);
 }
