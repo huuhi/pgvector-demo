@@ -13,4 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Service
 public interface ChatService {
     SseEmitter chat(ChatDTO chatDTO);
+
+    SseEmitter chatWithChatRequest(ChatDTO chatDTO);
 }

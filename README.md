@@ -133,3 +133,10 @@ comment on column mcp_skill_information.mcp_type is 'MCP的类型,HTTP或SSE';
 > 之后我觉得可以加个编辑文件和读取文件，就这两个，加完我是真没啥想法了，以及执行命令的时候，去让一个AI生成类似于claudecode的那种
 > 这个应该不会很难的。就这样吧~
 > 多agent对我来说应该还有点距离啊，有时间先完成前面的吧，多agent，目前也没时间搞了
+
+### 4.19
+
+今天在搞多模态，目前已经验证了，传输一个Content集合是最好的方法，以及上传文件的话，需要进行解析，添加到元数据到记录中。
+那么怎么添加元数据呢？ChatRequest行不通，因为会toString。
+所以目前现在使用线程变量来实现这个功能。不过具体文件解析就不写了。
+完整实现建议看这个仓库:[Agent实现](https://github.com/huuhi/nexus-agent)

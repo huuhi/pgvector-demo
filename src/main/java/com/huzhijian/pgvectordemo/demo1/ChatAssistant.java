@@ -1,6 +1,11 @@
 package com.huzhijian.pgvectordemo.demo1;
 
+import dev.langchain4j.data.image.Image;
+import dev.langchain4j.data.message.Content;
+import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.service.*;
+
+import java.util.List;
 
 /**
  * @author 胡志坚
@@ -10,5 +15,8 @@ import dev.langchain4j.service.*;
  */
 public interface ChatAssistant {
     @SystemMessage("当前会话ID为:{{sessionId}}，适当的加载skill学习以及合理运用提供的工具")
-    TokenStream chat(@UserMessage String msg,   @V("sessionId") @MemoryId Object memoryId);
+    TokenStream chat(@UserMessage List<Content> contents, @V("sessionId") @MemoryId Object memoryId);
+
+
+    TokenStream chat(ChatRequest request);
 }

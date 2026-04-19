@@ -1,19 +1,11 @@
 package com.huzhijian.pgvectordemo.controller;
 
-import com.huzhijian.pgvectordemo.demo1.ChatAssistant;
 import com.huzhijian.pgvectordemo.domain.dto.ChatDTO;
 import com.huzhijian.pgvectordemo.service.ChatService;
-import dev.langchain4j.agent.tool.ToolExecutionRequest;
-import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.service.TokenStream;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author 胡志坚
@@ -31,6 +23,11 @@ public class SeeController {
     @PostMapping("/stream")
     public SseEmitter streamChat(@RequestBody ChatDTO chatDTO) {
         return chatService.chat(chatDTO);
+    }
+
+    @PostMapping("/image")
+    public SseEmitter streamChatWithImage(@RequestBody ChatDTO chatDTO) {
+        return chatService.chatWithChatRequest(chatDTO);
     }
 
 }

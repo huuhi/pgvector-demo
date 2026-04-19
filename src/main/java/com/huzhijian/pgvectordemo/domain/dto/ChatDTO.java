@@ -18,5 +18,6 @@ public class ChatDTO {
     private String sessionId;
     private List<String> skills;
     private List<String> MCPs;
+    private String imageUrl;
 
 }
